@@ -1,0 +1,96 @@
+{
+ "candidates": [
+  {
+   "image": "img_0012",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'chair' v\u00e0 segment 'bench' tr\u00f9ng v\u1ecb tr\u00ed (IoU 0.98) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "chair",
+   "pan_class": "bench",
+   "iou": 0.982,
+   "box": [
+    233,
+    236,
+    44,
+    185
+   ],
+   "segment_id": 10050906
+  },
+  {
+   "image": "img_0027",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'traffic light' v\u00e0 segment 'elephant' tr\u00f9ng v\u1ecb tr\u00ed (IoU 0.97) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "traffic light",
+   "pan_class": "elephant",
+   "iou": 0.973,
+   "box": [
+    256,
+    111,
+    62,
+    63
+   ],
+   "segment_id": 1944881
+  },
+  {
+   "image": "img_0044",
+   "type": "bbox_drift",
+   "note": "27% pixel segment 'person' n\u1eb1m ngo\u00e0i box c\u00f9ng l\u1edbp (IoU 0.55)",
+   "det_class": "person",
+   "iou": 0.55,
+   "out_frac": 0.273,
+   "box": [
+    144,
+    114,
+    181,
+    160
+   ],
+   "segment_id": 5991998
+  },
+  {
+   "image": "img_0124",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'kite' v\u00e0 segment 'bird' tr\u00f9ng v\u1ecb tr\u00ed (IoU 0.99) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "kite",
+   "pan_class": "bird",
+   "iou": 0.986,
+   "box": [
+    1,
+    17,
+    414,
+    234
+   ],
+   "segment_id": 3166103
+  },
+  {
+   "image": "img_0191",
+   "type": "missing_box",
+   "note": "segment thing 'person' (4564 px, bbox [366, 277, 83, 106]) kh\u00f4ng c\u00f3 box detection n\u00e0o g\u1ea7n",
+   "pan_class": "person",
+   "segment_id": 13830730,
+   "box": [
+    366,
+    277,
+    83,
+    106
+   ]
+  },
+  {
+   "image": "img_0217",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'orange' v\u00e0 segment 'apple' tr\u00f9ng v\u1ecb tr\u00ed (IoU 1.00) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "orange",
+   "pan_class": "apple",
+   "iou": 0.997,
+   "box": [
+    67,
+    77,
+    257,
+    480
+   ],
+   "segment_id": 5857237
+  }
+ ]
+}

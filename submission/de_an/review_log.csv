@@ -1,0 +1,7 @@
+image,type,verdict,note
+img_0012,category_swap,confirmed,"thấy ghế (chair) ở vùng được đánh dấu. YOLO ghi chair, panoptic ghi bench."
+img_0027,category_swap,confirmed,"thấy đèn giao thông ở vùng được đánh dấu. YOLO ghi traffic light, panoptic ghi elephant."
+img_0044,bbox_drift,confirmed,"kiểm tra và thấy box YOLO bị lệch khỏi người trong vùng được đánh dấu."
+img_0124,class_swap,confirmed,"thấy chim ở vùng được đánh dấu. Panoptic ghi bird, YOLO ghi kite."
+img_0191,missing_box,confirmed,"thấy người trong vùng được đánh dấu đủ rõ để gán nhãn. File YOLO thiếu box lớp person cho người này."
+img_0217,class_swap,confirmed,"thấy quả táo ở vùng được đánh dấu. Panoptic ghi apple, YOLO ghi orange."
