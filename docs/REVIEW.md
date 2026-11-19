@@ -1,17 +1,18 @@
 # Bảng review ứng viên — r3007 (Pha 2)
 
 Nguồn: `runs/r3007/candidates.json` (validator `--candidates`). Ảnh đã vẽ sẵn box đỏ (detection)
-+ viền xanh lá (segment panoptic) trong `runs/r3007/review/`. **Mỗi người mở ảnh gốc trong
-`delivery/images/` để quyết — RULES: dòng `confirmed`/`rejected` là kết luận của người xem, ghi rõ ai xem.**
 
-| # | Ảnh | Ứng viên | Tín hiệu validator | Người xem | Người đối chứng | Verdict |
-|---|---|---|---|---|---|---|
-| 1 | 000000009483 | class_swap ⇄ category_swap | box `laptop` vs segment `tv` trùng vị trí IoU 0.99 | Tùng | Dũ | pending |
-| 2 | 000000019742 | class_swap ⇄ category_swap | box `vase` vs segment `baseball bat` IoU 0.99 | Dũ | Tùng | pending |
-| 3 | 000000023272 | class_swap ⇄ category_swap | box `bus` vs segment `car` IoU 1.00 | Bỉn | Phạm | pending |
-| 4 | 000000023781 | class_swap ⇄ category_swap | box `carrot` vs segment `motorcycle` IoU 0.99 | Phạm | Bỉn | pending |
-| 5 | 000000013291 | instance_merge | segment `frisbee` (id 13419440) phủ 2 box `frisbee` tách rời, 63% + 37% pixel | Huy | Bỉn | pending |
-| 6 | 000000007511 | missing_box | segment `person` 14.530 px, bbox [386,241,123,231], không box nào gần | Tùng | Phạm | pending |
+- viền xanh lá (segment panoptic) trong `runs/r3007/review/`. **Mỗi người mở ảnh gốc trong
+  `delivery/images/` để quyết — RULES: dòng `confirmed`/`rejected` là kết luận của người xem, ghi rõ ai xem.**
+
+| #   | Ảnh          | Ứng viên                   | Tín hiệu validator                                                            | Người xem | Người đối chứng | Verdict |
+| --- | ------------ | -------------------------- | ----------------------------------------------------------------------------- | --------- | --------------- | ------- |
+| 1   | 000000009483 | class_swap ⇄ category_swap | box `laptop` vs segment `tv` trùng vị trí IoU 0.99                            | Tùng      | Vũ              | pending |
+| 2   | 000000019742 | class_swap ⇄ category_swap | box `vase` vs segment `baseball bat` IoU 0.99                                 | Vũ        | Tùng            | pending |
+| 3   | 000000023272 | class_swap ⇄ category_swap | box `bus` vs segment `car` IoU 1.00                                           | Phát      | Hiện            | pending |
+| 4   | 000000023781 | class_swap ⇄ category_swap | box `carrot` vs segment `motorcycle` IoU 0.99                                 | Hiện      | Phát            | pending |
+| 5   | 000000013291 | instance_merge             | segment `frisbee` (id 13419440) phủ 2 box `frisbee` tách rời, 63% + 37% pixel | Huy       | Phát            | pending |
+| 6   | 000000007511 | missing_box                | segment `person` 14.530 px, bbox [386,241,123,231], không box nào gần         | Tùng      | Hiện            | pending |
 
 Cách ghi — sửa `runs/r3007/review_log.csv` (giữ header), mỗi dòng verdict thay `pending`:
 
