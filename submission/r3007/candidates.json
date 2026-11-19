@@ -1,0 +1,102 @@
+{
+ "candidates": [
+  {
+   "image": "000000007511",
+   "type": "missing_box",
+   "note": "segment thing 'person' (14530 px, bbox [386, 241, 123, 231]) kh\u00f4ng c\u00f3 box detection n\u00e0o g\u1ea7n",
+   "pan_class": "person",
+   "segment_id": 3026996,
+   "box": [
+    386,
+    241,
+    123,
+    231
+   ]
+  },
+  {
+   "image": "000000009483",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'laptop' v\u00e0 segment 'tv' tr\u00f9ng v\u1ecb tr\u00ed (IoU 0.99) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "laptop",
+   "pan_class": "tv",
+   "iou": 0.993,
+   "box": [
+    459,
+    210,
+    120,
+    139
+   ],
+   "segment_id": 9270375
+  },
+  {
+   "image": "000000013291",
+   "type": "instance_merge",
+   "note": "segment 'frisbee' (id 13419440) ph\u1ee7 pixel c\u1ee7a 2 box t\u00e1ch r\u1eddi c\u00f9ng l\u1edbp (63% + 37%) \u2014 ki\u1ec3m tra \u1ea3nh: hai v\u1eadt b\u1ecb g\u1ed9p th\u00e0nh m\u1ed9t segment",
+   "det_class": "frisbee",
+   "boxes": [
+    [
+     90,
+     152,
+     46,
+     42
+    ],
+    [
+     218,
+     185,
+     33,
+     36
+    ]
+   ],
+   "segment_id": 13419440
+  },
+  {
+   "image": "000000019742",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'vase' v\u00e0 segment 'baseball bat' tr\u00f9ng v\u1ecb tr\u00ed (IoU 0.99) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "vase",
+   "pan_class": "baseball bat",
+   "iou": 0.995,
+   "box": [
+    172,
+    72,
+    166,
+    275
+   ],
+   "segment_id": 1257078
+  },
+  {
+   "image": "000000023272",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'bus' v\u00e0 segment 'car' tr\u00f9ng v\u1ecb tr\u00ed (IoU 1.00) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "bus",
+   "pan_class": "car",
+   "iou": 0.999,
+   "box": [
+    0,
+    0,
+    499,
+    371
+   ],
+   "segment_id": 7369075
+  },
+  {
+   "image": "000000023781",
+   "type": "class_swap",
+   "alt_type": "category_swap",
+   "note": "box 'carrot' v\u00e0 segment 'motorcycle' tr\u00f9ng v\u1ecb tr\u00ed (IoU 0.99) \u2014 m\u1edf \u1ea3nh xem b\u00ean n\u00e0o sai",
+   "det_class": "carrot",
+   "pan_class": "motorcycle",
+   "iou": 0.99,
+   "box": [
+    380,
+    363,
+    102,
+    59
+   ],
+   "segment_id": 5595317
+  }
+ ]
+}
