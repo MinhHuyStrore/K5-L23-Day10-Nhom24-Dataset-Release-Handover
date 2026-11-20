@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test đơn vị cho validator (bất đồng của Dũ — Pha 1/2).
+"""Test đơn vị cho validator (phần của Vũ — Pha 1/2).
 
 Dựng một delivery tổng hợp siêu nhỏ bằng pngutil (PNG chuẩn), gài từng loại lỗi luật,
 chạy validator qua CLI và kiểm errors.json. Không cần data_source, không mạng.
@@ -89,14 +89,19 @@ class ValidatorTest(unittest.TestCase):
         cmd = [sys.executable, "-X", "utf8", str(ROOT / "validator" / "validate.py"), str(self.d), "--out", out]
         if candidates:
             cmd += ["--candidates", candidates]
-        r = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+        r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", cwd=ROOT)
         self.assertEqual(r.returncode, 0, r.stderr)
         return json.loads(Path(out).read_text(encoding="utf-8"))["errors"]
 
-    def set_hash(self, items, n, field, data: bytes):
-        self.d.joinpath(items[n][field.split("_")[0]]).write_bytes(data)
-        self.d.joinpath("manifest.json").write_text(
-            json.dumps({"dataset": "t", "num_classes": 2, "items": items}), encoding="utf-8")
+    def write_label(self, name: str, text: str):
+        """Keep hashes valid so label tests isolate the intended rule."""
+        manifest_path = self.d / "manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        item = manifest["items"][name]
+        label = self.d / item["label"]
+        label.write_text(text, encoding="utf-8")
+        item["label_sha256"] = hashlib.sha256(label.read_bytes()).hexdigest()
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
 
     # ----------------------------------------------------------------- ca sạch
     def test_clean_delivery_reports_nothing(self):
@@ -124,38 +129,91 @@ class ValidatorTest(unittest.TestCase):
     # ----------------------------------------------------------------- nhãn
     def test_invalid_class(self):
         self.build_base()
-        (self.d / "labels" / "img_a.txt").write_text("9 0.5 0.5 0.4 0.4\n", encoding="utf-8")
-        self.assertIn({"type": "invalid_class", "target": "img_a"}, self.run_validator(str(self.tmp / "e.json")))
+        self.write_label("img_a", "9 0.5 0.5 0.4 0.4\n")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")),
+                         [{"type": "invalid_class", "target": "img_a"}])
 
     def test_bbox_out_of_bounds_small_over_only(self):
         self.build_base()
-        (self.d / "labels" / "img_b.txt").write_text("0 0.85 0.5 0.4 0.4\n", encoding="utf-8")  # x2=1.05 → tràn 5%
-        self.assertIn({"type": "bbox_out_of_bounds", "target": "img_b"}, self.run_validator(str(self.tmp / "e.json")))
+        self.write_label("img_b", "0 0.85 0.5 0.4 0.4\n")  # x2=1.05
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")),
+                         [{"type": "bbox_out_of_bounds", "target": "img_b"}])
 
     def test_duplicate_box_offset_2px(self):
         self.build_base()
-        (self.d / "labels" / "img_c.txt").write_text(
-            "0 0.5 0.5 0.4 0.4\n0 0.53125 0.5 0.4 0.4\n", encoding="utf-8")  # lệch 2px/64
-        self.assertIn({"type": "duplicate_box", "target": "img_c"}, self.run_validator(str(self.tmp / "e.json")))
+        self.write_label("img_c", "0 0.5 0.5 0.4 0.4\n0 0.53125 0.5 0.4 0.4\n")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")),
+                         [{"type": "duplicate_box", "target": "img_c"}])
 
     def test_exact_duplicate_box(self):
         """Box lap trung khit van la loi, ke ca khi IoU bang 1."""
-        items = self.build_base()
-        label = self.d / items["img_a"]["label"]
-        label.write_text("0 0.5 0.5 0.4 0.4\n" * 2, encoding="utf-8")
-        items["img_a"]["label_sha256"] = hashlib.sha256(label.read_bytes()).hexdigest()
-        (self.d / "manifest.json").write_text(
-            json.dumps({"num_classes": 2, "items": items}), encoding="utf-8")
+        self.build_base()
+        self.write_label("img_a", "0 0.5 0.5 0.4 0.4\n" * 2)
         self.assertEqual(self.run_validator(str(self.tmp / "e.json")),
                          [{"type": "duplicate_box", "target": "img_a"}])
+
+    def test_duplicate_box_offset_one_pixel(self):
+        self.build_base()
+        self.write_label("img_a", "0 0.5 0.5 0.4 0.4\n0 0.515625 0.5 0.4 0.4\n")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")),
+                         [{"type": "duplicate_box", "target": "img_a"}])
+
+    def test_blank_lines_and_repeated_boxes_report_one_error(self):
+        self.build_base()
+        self.write_label("img_a", "\n" + "0 0.5 0.5 0.4 0.4\n\n" * 3)
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")),
+                         [{"type": "duplicate_box", "target": "img_a"}])
+
+    def test_identical_geometry_different_classes_is_not_duplicate(self):
+        self.build_base()
+        self.write_label("img_a", "0 0.5 0.5 0.4 0.4\n1 0.5 0.5 0.4 0.4\n")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")), [])
+
+    def test_separated_centres_are_not_duplicate(self):
+        self.build_base()
+        self.write_label("img_a", "0 0.5 0.5 0.4 0.4\n0 0.5625 0.5 0.4 0.4\n")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")), [])
+
+    def test_bbox_rounding_tolerance(self):
+        self.build_base()
+        self.write_label("img_a", "0 0.800001 0.5 0.4 0.4\n")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")), [])
+
+    def test_zero_pixel_segment_is_not_overlap(self):
+        self.build_base()
+        path = self.d / "panoptic.json"
+        pan = json.loads(path.read_text(encoding="utf-8"))
+        pan["annotations"][0]["segments_info"][0]["id"] = 65537
+        path.write_text(json.dumps(pan), encoding="utf-8")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")), [])
+
+    def test_yolo_to_pixel_coordinates_non_square_image(self):
+        self.build_base()
+        path = self.d / "panoptic.json"
+        pan = json.loads(path.read_text(encoding="utf-8"))
+        pan["images"][0].update(width=200, height=100)
+        path.write_text(json.dumps(pan), encoding="utf-8")
+        self.write_label("img_a", "0 0.5 0.5 0.4 0.2\n")
+        sys.path.insert(0, str(ROOT))
+        from validator.validate import Delivery
+        rect = Delivery(self.d).boxes("img_a")[0]["rect"]
+        self.assertEqual((rect.x1, rect.y1, rect.x2, rect.y2), (60, 40, 140, 60))
+
+    def test_cli_does_not_modify_delivery(self):
+        self.build_base()
+        def snapshot():
+            return {p.relative_to(self.d).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+                    for p in self.d.rglob("*") if p.is_file()}
+        before = snapshot()
+        self.run_validator(str(self.tmp / "e.json"), str(self.tmp / "c.json"))
+        self.assertEqual(snapshot(), before)
 
     def test_natural_overlapping_boxes_not_duplicate(self):
         """Hai box COCO chồng tự nhiên (IoU ~0.6) nhưng KHÁC kích thước: không được báo."""
         self.build_base()
-        (self.d / "labels" / "img_a.txt").write_text(
-            "0 0.5 0.5 0.4 0.4\n0 0.52 0.52 0.28 0.30\n", encoding="utf-8")
+        self.write_label("img_a", "0 0.5 0.5 0.4 0.4\n0 0.52 0.52 0.28 0.30\n")
         errs = self.run_validator(str(self.tmp / "e.json"))
-        self.assertNotIn({"type": "duplicate_box", "target": "img_a"}, errs)
+        self.assertEqual(errs, [])
 
     # ----------------------------------------------------------------- metadata
     def test_scene_leak_targets_scene_id(self):
@@ -199,6 +257,7 @@ class ValidatorTest(unittest.TestCase):
         cpath = self.tmp / "c.json"
         self.run_validator(str(self.tmp / "e.json"), str(cpath))
         cands = json.loads(cpath.read_text(encoding="utf-8"))["candidates"]
+        self.assertTrue(cands, "Fixture must generate candidates to test their schema")
         self.assertTrue(all({"image", "type", "note"} <= set(c) for c in cands))
 
 

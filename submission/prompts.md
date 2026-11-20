@@ -11,4 +11,6 @@
 
 | 7 | Trương Tuấn Vũ | Codex | Pull repo Nhóm 24 và kiểm tra validator luật theo GUIDE Pha 1 | Điều kiện duplicate_box trong bản pull bỏ qua cặp có IoU > 0,9, nên bỏ sót box trùng khít | Tái hiện bằng delivery tổng hợp, thêm test hồi quy cho box trùng khít và sửa điều kiện so lớp. Giữ tiêu chí cùng lớp, cùng kích thước và tâm gần nhau. Công cụ lab báo F1 lỗi luật ≈ 1,0 trên seed 3007 và 3013; lô sạch 50 ảnh có 0 lỗi luật. |
 
-> Ghi chú: các dòng `confirmed`/`rejected` của `review_log.csv` là kết luận của người trực tiếp xem ảnh, không phải của AI (`review_log.csv` đang để `pending` chờ cả nhóm). Validator chỉ đọc delivery, không dán ảnh vào công cụ AI nào.
+| 8 | Trương Tuấn Vũ | Codex | Làm phần ảnh #3 và test validator theo phân công đã xác nhận | Bộ test cũ chưa có box trùng khít; các ca sửa label đồng thời làm sai hash, nên chưa cô lập từng luật. Kiểm schema candidates trên danh sách rỗng cũng có thể đạt giả | Bổ sung để có 22 ca: kiểm box trùng/gần trùng, tránh báo nhầm, dung sai tọa độ, YOLO sang pixel trên ảnh 200×100, mask void và CLI không sửa delivery. Cập nhật hash fixture và giải mã UTF-8 rõ ràng. Ảnh gốc và ảnh render #3 được hiển thị trong chat để Vũ tự xem; Vũ trả lời “nó là car”, từ đó bổ sung đối chứng class_swap và giữ nguyên nhận xét của Phát. |
+
+> Ghi chú: các dòng `confirmed`/`rejected` của `review_log.csv` là kết luận của người trực tiếp xem ảnh, không phải của AI (dòng chưa có người kết luận giữ `pending`). Validator chỉ đọc delivery. Cách Vũ dùng ảnh trong chat đã ghi ở dòng 8; AI không tự quyết verdict.
