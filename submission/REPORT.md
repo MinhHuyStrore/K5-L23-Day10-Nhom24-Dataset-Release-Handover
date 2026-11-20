@@ -20,6 +20,8 @@
 Đơn vị chấm là cặp `(type, target)` và **F1 phạt FP y như FN** (precision = TP/(TP+FP)). Ứng viên chỉ là *nghi vấn*: COCO vốn lệch tự nhiên giữa detection và panoptic (vật bị che, crowd, void), nên một phần hàng đợi không phải lỗi gán nhãn. Báo hết 23 ứng viên của bản validator đầu = thêm hàng chục cặp FP trong khi mỗi loại lỗi gài chỉ 0–3 cặp → precision tụt mạnh, recall gần như không tăng thêm (lỗi gán nhãn thật vốn đã nằm trong hàng đợi). Trên lô sạch điều này cực đoan: **0 lỗi gài nhưng vẫn có ứng viên** — nộp cả đống ứng viên thì F1 nhóm cross-check = 0 dù validator "bắt nhiều". Xem ảnh chính là bước lọc FP→TP; vì thế `review_log.csv` bắt buộc mọi dòng `confirmed` có ghi chú thấy gì.
 
 ## 3. Quyết định và lineage
+- Chạy lại validator trên r3007: **250 ảnh, 11 lỗi luật, 6 ứng viên**. Validator kiểm hash, class, box, diện tích segment, guideline theo job và split theo cảnh; ứng viên cần xem ảnh và chỉ gộp lỗi gán nhãn đã `confirmed`.
+- QC tính số `target` khác nhau trong errors cuối / số ảnh v1; một ảnh tính một lần, `scene_leak` tính một đơn vị. **4,4% là QC từ lỗi luật**, cần tính lại sau khi cả nhóm chốt review.
 - QC v1 = 11 đơn vị lỗi / 250 ảnh = **4,4 % > 2 %** (mỗi ảnh 1 lỗi; `scene_leak` tính **một cảnh** — `scene_214`) ⇒ **HOLD** theo ngưỡng Day 7: `decision HOLD` cho `lab250_c62afeb67fdb` trong `runs/lineage.jsonl`.
 - `lineage.py impact` → `R-021: affected=True action=review_or_retrain`. Đổi dataset **không tự sửa model** đã học trên nhãn sai/hash sai/split rò ⇒ run R-021 phải rà lại hoặc train lại.
 - v2 (`lab250_c62afeb67fdb_v2`, parent v1, đã `pack_release.py` + event `release`): **246 ảnh, 1675 nhãn, 4 ảnh rework, 2 ảnh panoptic-only ở lại**; delivery v1 không bị sửa (H1 PASS — mọi sửa chữa nằm trong `handover/`).
