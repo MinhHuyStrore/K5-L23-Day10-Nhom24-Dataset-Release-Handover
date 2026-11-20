@@ -6,6 +6,10 @@
   },
   {
    "type": "category_swap",
+   "target": "000000019742"
+  },
+  {
+   "type": "category_swap",
    "target": "000000023781"
   },
   {

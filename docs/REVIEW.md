@@ -8,7 +8,7 @@ Nguồn: `runs/r3007/candidates.json` (validator `--candidates`). Ảnh đã v�
 | #   | Ảnh          | Ứng viên                   | Tín hiệu validator                                                            | Người xem | Người đối chứng | Verdict |
 | --- | ------------ | -------------------------- | ----------------------------------------------------------------------------- | --------- | --------------- | ------- |
 | 1   | 000000009483 | class_swap ⇄ category_swap | box `laptop` vs segment `tv` trùng vị trí IoU 0.99                            | Tùng      | Vũ              | confirmed class_swap (Huy xem thay; cần Tùng/đối chứng lại trước hạn) |
-| 2   | 000000019742 | class_swap ⇄ category_swap | box `vase` vs segment `baseball bat` IoU 0.99                                 | Vũ        | Tùng            | pending |
+| 2   | 000000019742 | class_swap ⇄ category_swap | box `vase` vs segment `baseball bat` IoU 0.99                                 | Tùng      | Vũ              | confirmed category_swap (Tùng) |
 | 3   | 000000023272 | class_swap ⇄ category_swap | box `bus` vs segment `car` IoU 1.00                                           | Phát      | Hiện, Vũ        | confirmed (Phát; Vũ đối chứng) |
 | 4   | 000000023781 | class_swap ⇄ category_swap | box `carrot` vs segment `motorcycle` IoU 0.99                                 | Hiện      | Phát            | confirmed category_swap (Hiện; chờ Phát đối chứng) |
 | 5   | 000000013291 | instance_merge             | segment `frisbee` (id 13419440) phủ 2 box `frisbee` tách rời, 63% + 37% pixel | Huy       | Phát            | pending |

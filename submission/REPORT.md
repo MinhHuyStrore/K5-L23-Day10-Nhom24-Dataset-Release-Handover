@@ -4,10 +4,10 @@
 - F1 theo seed (`score_findings.py`, chế độ tự đo — chỉ F1 làm tròn, không dò từng ảnh):
   | Lô | lỗi luật | lỗi gán nhãn | tổng | truy vết |
   |---|---|---|---|---|
-  | r3007 (seed luyện tập) | ≈ 1.0 | ≈ 0.5 (3/5 ứng viên đã chốt; còn #2 19742 và #5 13291 pending) | ≈ 0.8 | tier_a/tier_b/notify ≈ 1.0 |
+  | r3007 (seed luyện tập) | ≈ 1.0 | ≈ 0.6 (4/5 ứng viên nghi lỗi đã chốt; còn #5 13291 pending) | ≈ 0.8 | tier_a/tier_b/notify ≈ 1.0 |
   | r3013 (thêm, qua `inject_release.py`) | ≈ 1.0 | — | ≈ 0.7 | — |
   | `runs/clean` (seed 5, `--no-faults`, 50 ảnh pool calib) | **0 lỗi báo** | 0 ứng viên | — | — |
-- Số ứng viên trên lô sạch: **0** (50 ảnh). Hàng đợi trên r3007: **6 ảnh** (4 class_swap/category_swap, 1 instance_merge, 1 missing_box) — đã render vào `runs/r3007/review/`, phân người xem ở [docs/REVIEW.md](../docs/REVIEW.md). Trạng thái review: confirmed 3 (23272 class_swap — Phát/Vũ; 23781 category_swap — Hiện; 9483 class_swap — Huy), rejected 1 (7511 — Huy), pending 2 (19742 Vũ, 13291 Huy+Phát).
+- Số ứng viên trên lô sạch: **0** (50 ảnh). Hàng đợi trên r3007: **6 ảnh** (4 class_swap/category_swap, 1 instance_merge, 1 missing_box) — đã render vào `runs/r3007/review/`, phân người xem ở [docs/REVIEW.md](../docs/REVIEW.md). Trạng thái review: confirmed 4 (23272 class_swap — Phát/Vũ; 23781 category_swap — Hiện; 19742 category_swap — Tùng; 9483 class_swap — Huy), rejected 1 (7511 — Huy), pending 1 (13291 instance_merge — Huy+Phát).
 - Ngưỡng đã chọn và cách chọn (không dùng `_private`):
   - `wrong_hash`: tự tính sha256 trên **bytes** (`rb`) của image + label + mask rồi so manifest — không kiểm định dạng 64 ký tự (lỗi gài chính là hash *hợp lệ của ảnh khác*).
   - `duplicate_box`: theo định nghĩa lỗi — cùng lớp, **cùng kích thước** (±2 px), lệch tâm ≤3 px; **không dùng IoU** vì GUIDE/DELIVERY nêu COCO có cặp tự nhiên chồng tới IoU ≈ 0.66 nhưng khác kích thước.
@@ -21,10 +21,10 @@
 
 ## 3. Quyết định và lineage
 - Chạy lại validator trên r3007: **250 ảnh, 11 lỗi luật, 6 ứng viên**. Validator kiểm hash, class, box, diện tích segment, guideline theo job và split theo cảnh; ứng viên cần xem ảnh và chỉ gộp lỗi gán nhãn đã `confirmed`.
-- QC tính số `target` khác nhau trong errors cuối / số ảnh v1; một ảnh tính một lần, `scene_leak` tính một đơn vị. **4,4% là QC từ lỗi luật**, cần tính lại sau khi cả nhóm chốt review.
-- QC v1 = 14 đơn vị lỗi / 250 ảnh = **5,6 % > 2 %** (11 lỗi luật + 3 lỗi gán nhãn `confirmed`; mỗi ảnh 1 lỗi, `scene_leak` tính **một cảnh** — `scene_214`) ⇒ **HOLD** theo ngưỡng Day 7: `decision HOLD` cho `lab250_c62afeb67fdb` trong `runs/lineage.jsonl`.
+- QC tính số `target` khác nhau trong errors cuối / số ảnh v1; một ảnh tính một lần, `scene_leak` tính một đơn vị. **4,4% là QC từ lỗi luật**, đã tính lại sau khi cả nhóm chốt review (dòng dưới).
+- QC v1 = 15 đơn vị lỗi / 250 ảnh = **6,0 % > 2 %** (11 lỗi luật + 4 lỗi gán nhãn `confirmed`; mỗi ảnh 1 lỗi, `scene_leak` tính **một cảnh** — `scene_214`) ⇒ **HOLD** theo ngưỡng Day 7: `decision HOLD` cho `lab250_c62afeb67fdb` trong `runs/lineage.jsonl`.
 - `lineage.py impact` → `R-021: affected=True action=review_or_retrain`. Đổi dataset **không tự sửa model** đã học trên nhãn sai/hash sai/split rò ⇒ run R-021 phải rà lại hoặc train lại.
-- v2 (`lab250_c62afeb67fdb_v2`, parent v1, đã `pack_release.py` + event `release`, `check_handover.py` 17/17 PASS): **244 ảnh, 1667 nhãn, 6 ảnh rework** (gồm 2 class_swap 9483 + 23272 do review chốt), **3 ảnh lỗi chỉ-panoptic ở lại** (2 thing_overlap + category_swap 23781, báo team panoptic ở README.txt); 2 ảnh `wrong_hash` đã giải mã kiểm tra trước khi ghi hash thật; `scene_214` gộp về split đa số trong `truyvet.csv`; delivery v1 không bị sửa (H1 PASS).
+- v2 (`lab250_c62afeb67fdb_v2`, parent v1, đã `pack_release.py` + event `release`, `check_handover.py` 17/17 PASS): **244 ảnh, 1667 nhãn, 6 ảnh rework** (gồm 2 class_swap 9483 + 23272 do review chốt), **4 ảnh lỗi chỉ-panoptic ở lại** (2 thing_overlap + category_swap 23781, 19742 — báo team panoptic ở README.txt); 2 ảnh `wrong_hash` đã giải mã kiểm tra trước khi ghi hash thật; `scene_214` gộp về split đa số trong `truyvet.csv`; delivery v1 không bị sửa (H1 PASS).
 
 ## 4. Hash chứng minh gì, không chứng minh gì?
 - **Chứng minh**: file trên đĩa khớp đúng bản đã niêm phong trong manifest — phát hiện thiếu file, nội dung bị tráo (ca thực tế: `image_sha256` của `000000006723`/`000000020247` là hash **của ảnh khác**, format hoàn toàn hợp lệ), nhãn/mask bị sửa sau đóng gói, hỏng do cắt/trốn. Vì ảnh là JPEG gốc COCO, mở được + đúng nội dung mà hash sai ⇒ kết luận manifest sai, ghi hash thật vào v2.
