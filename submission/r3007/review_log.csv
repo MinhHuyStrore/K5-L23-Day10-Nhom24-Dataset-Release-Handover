@@ -3,5 +3,5 @@ image,type,verdict,note
 000000019742,category_swap,confirmed,"Tùng xem và xác nhận: vật trong box đỏ là chiếc bình trang trí có thân phình và chân đế. Detection ghi vase đúng; panoptic ghi baseball bat sai loại vật ⇒ category_swap"
 000000023272,class_swap,confirmed,"Phát xem: ảnh cận mui xe Mercedes đen có con mèo nằm trên, đây là ô tô con chứ không phải xe buýt; segment car ôm đúng viền xe, detection ghi bus sai ⇒ class_swap. Vũ đối chứng: vật trong ảnh là car (ô tô), không phải bus; đồng ý class_swap"
 000000023781,category_swap,confirmed,"Hiện xem: ảnh rổ rau củ, vật trong box đỏ là một củ cà rốt cam thon dài nên detection ghi carrot là đúng; panoptic ghi motorcycle sai ⇒ category_swap (chờ Phát đối chứng và confirm lại)"
-000000013291,instance_merge,pending,"validator: một segment phủ pixel của 2 box tách rời cùng lớp — chờ Huy+Phát xem runs/r3007/review/000000013291__instance_merge.png, kiểm hai vật rời bị gộp hay một vật bị tách"
+000000013291,instance_merge,rejected,"Huy review: box bao thiếu vật thể và segment lệch; chưa xác nhận hiện tượng 2 instance riêng bị gộp, candidate instance_merge không đúng"
 000000007511,missing_box,rejected,"Huy đã kiểm tra runs/r3007/review/000000007511__missing_box.png: box detection đã tồn tại nhưng segment bị lệch, không phải lỗi missing_box ⇒ loại khỏi danh sách, không đưa vào errors.json"

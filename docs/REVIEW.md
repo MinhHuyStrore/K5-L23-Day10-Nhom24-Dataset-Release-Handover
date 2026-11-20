@@ -11,7 +11,7 @@ Nguồn: `runs/r3007/candidates.json` (validator `--candidates`). Ảnh đã v�
 | 2   | 000000019742 | class_swap ⇄ category_swap | box `vase` vs segment `baseball bat` IoU 0.99                                 | Tùng      | Vũ              | confirmed category_swap (Tùng) |
 | 3   | 000000023272 | class_swap ⇄ category_swap | box `bus` vs segment `car` IoU 1.00                                           | Phát      | Hiện, Vũ        | confirmed (Phát; Vũ đối chứng) |
 | 4   | 000000023781 | class_swap ⇄ category_swap | box `carrot` vs segment `motorcycle` IoU 0.99                                 | Hiện      | Phát            | confirmed category_swap (Hiện; chờ Phát đối chứng) |
-| 5   | 000000013291 | instance_merge             | segment `frisbee` (id 13419440) phủ 2 box `frisbee` tách rời, 63% + 37% pixel | Huy       | Phát            | pending |
+| 5   | 000000013291 | instance_merge             | segment `frisbee` (id 13419440) phủ 2 box `frisbee` tách rời, 63% + 37% pixel | Huy       | Phát            | rejected (Huy) |
 | 6   | 000000007511 | missing_box                | segment `person` 14.530 px, bbox [386,241,123,231], không box nào gần         | Tùng      | Hiện            | rejected (Huy kiểm tra — box đã tồn tại, không phải thiếu box) |
 
 Cách ghi — sửa `runs/r3007/review_log.csv` (giữ header), mỗi dòng verdict thay `pending`:

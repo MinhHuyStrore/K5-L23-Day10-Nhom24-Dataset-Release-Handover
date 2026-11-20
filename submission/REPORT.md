@@ -4,10 +4,10 @@
 - F1 theo seed (`score_findings.py`, chế độ tự đo — chỉ F1 làm tròn, không dò từng ảnh):
   | Lô | lỗi luật | lỗi gán nhãn | tổng | truy vết |
   |---|---|---|---|---|
-  | r3007 (seed luyện tập) | ≈ 1.0 | ≈ 0.6 (4/5 ứng viên nghi lỗi đã chốt; còn #5 13291 pending) | ≈ 0.8 | tier_a/tier_b/notify ≈ 1.0 |
+  | r3007 (seed luyện tập) | ≈ 1.0 | ≈ 0.6 (6/6 ứng viên đã chốt: 4 confirmed, 2 rejected) | ≈ 0.8 | tier_a/tier_b/notify ≈ 1.0 |
   | r3013 (thêm, qua `inject_release.py`) | ≈ 1.0 | — | ≈ 0.7 | — |
   | `runs/clean` (seed 5, `--no-faults`, 50 ảnh pool calib) | **0 lỗi báo** | 0 ứng viên | — | — |
-- Số ứng viên trên lô sạch: **0** (50 ảnh). Hàng đợi trên r3007: **6 ảnh** (4 class_swap/category_swap, 1 instance_merge, 1 missing_box) — đã render vào `runs/r3007/review/`, phân người xem ở [docs/REVIEW.md](../docs/REVIEW.md). Trạng thái review: confirmed 4 (23272 class_swap — Phát/Vũ; 23781 category_swap — Hiện; 19742 category_swap — Tùng; 9483 class_swap — Huy), rejected 1 (7511 — Huy), pending 1 (13291 instance_merge — Huy+Phát).
+- Số ứng viên trên lô sạch: **0** (50 ảnh). Hàng đợi trên r3007: **6 ảnh** (4 class_swap/category_swap, 1 instance_merge, 1 missing_box) — đã render vào `runs/r3007/review/`, phân người xem ở [docs/REVIEW.md](../docs/REVIEW.md). Trạng thái review: **đã chốt toàn bộ, không còn pending** — confirmed 4 (23272 class_swap — Phát/Vũ; 23781 category_swap — Hiện; 19742 category_swap — Tùng; 9483 class_swap — Huy), rejected 2 (7511 missing_box — Huy; 13291 instance_merge — Huy).
 - Ngưỡng đã chọn và cách chọn (không dùng `_private`):
   - `wrong_hash`: tự tính sha256 trên **bytes** (`rb`) của image + label + mask rồi so manifest — không kiểm định dạng 64 ký tự (lỗi gài chính là hash *hợp lệ của ảnh khác*).
   - `duplicate_box`: theo định nghĩa lỗi — cùng lớp, **cùng kích thước** (±2 px), lệch tâm ≤3 px; **không dùng IoU** vì GUIDE/DELIVERY nêu COCO có cặp tự nhiên chồng tới IoU ≈ 0.66 nhưng khác kích thước.
