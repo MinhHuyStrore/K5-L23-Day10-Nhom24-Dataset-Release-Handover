@@ -5,6 +5,18 @@
    "target": "000000004134"
   },
   {
+   "type": "category_swap",
+   "target": "000000023781"
+  },
+  {
+   "type": "class_swap",
+   "target": "000000009483"
+  },
+  {
+   "type": "class_swap",
+   "target": "000000023272"
+  },
+  {
    "type": "duplicate_box",
    "target": "000000005529"
   },
