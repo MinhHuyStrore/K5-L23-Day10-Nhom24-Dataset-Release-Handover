@@ -138,6 +138,17 @@ class ValidatorTest(unittest.TestCase):
             "0 0.5 0.5 0.4 0.4\n0 0.53125 0.5 0.4 0.4\n", encoding="utf-8")  # lệch 2px/64
         self.assertIn({"type": "duplicate_box", "target": "img_c"}, self.run_validator(str(self.tmp / "e.json")))
 
+    def test_exact_duplicate_box(self):
+        """Box lap trung khit van la loi, ke ca khi IoU bang 1."""
+        items = self.build_base()
+        label = self.d / items["img_a"]["label"]
+        label.write_text("0 0.5 0.5 0.4 0.4\n" * 2, encoding="utf-8")
+        items["img_a"]["label_sha256"] = hashlib.sha256(label.read_bytes()).hexdigest()
+        (self.d / "manifest.json").write_text(
+            json.dumps({"num_classes": 2, "items": items}), encoding="utf-8")
+        self.assertEqual(self.run_validator(str(self.tmp / "e.json")),
+                         [{"type": "duplicate_box", "target": "img_a"}])
+
     def test_natural_overlapping_boxes_not_duplicate(self):
         """Hai box COCO chồng tự nhiên (IoU ~0.6) nhưng KHÁC kích thước: không được báo."""
         self.build_base()

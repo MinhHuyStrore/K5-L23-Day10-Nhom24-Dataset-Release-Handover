@@ -284,8 +284,8 @@ def rule_errors(d: Delivery) -> tuple[list[dict], set[str]]:
         for i in range(len(boxes)):
             for j in range(i + 1, len(boxes)):
                 a, b = boxes[i], boxes[j]
-                if a["id"] != b["id"] or a["rect"].iou(b["rect"]) > 0.9:
-                    continue  # box trùng khít 100% cũng là lặp
+                if a["id"] != b["id"]:
+                    continue
                 aw, ah = a["rect"].x2 - a["rect"].x1, a["rect"].y2 - a["rect"].y1
                 bw, bh = b["rect"].x2 - b["rect"].x1, b["rect"].y2 - b["rect"].y1
                 if (abs(aw - bw) <= DUP_SIZE_PX and abs(ah - bh) <= DUP_SIZE_PX
